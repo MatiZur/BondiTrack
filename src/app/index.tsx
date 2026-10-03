@@ -1,98 +1,74 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView, StyleSheet, Text } from "react-native";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import Mapa from "../components/Mapa";
+import FiltroLinea from "../components/FiltroLinea";
+import TarjetaColectivo from "../components/TarjetaColectivo";
+import Favoritos from "../components/Favoritos";
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+import { colectivos } from "../data/colectivos";
+
+export default function Index() {
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <ScrollView style={styles.container}>
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+      <Text style={styles.titulo}>
+        BondiTrack
+      </Text>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+      <Text style={styles.subtitulo}>
+        Colectivos de Buenos Aires
+      </Text>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+      <Mapa />
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+      <FiltroLinea />
+
+      <Text style={styles.titulo2}>
+        Colectivos
+      </Text>
+
+      {
+        colectivos.map(function(colectivo) {
+          return (
+            <TarjetaColectivo
+              key={colectivo.id}
+              colectivo={colectivo}
+            />
+          );
+        })
+      }
+
+      <Favoritos />
+
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    padding: 20,
+    backgroundColor: "#eeeeee"
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+
+  titulo: {
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 5
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+
+  subtitulo: {
+    fontSize: 18,
+    marginBottom: 20
   },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
+
+  titulo2: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginTop: 20,
+    marginBottom: 10
+  }
+
 });
